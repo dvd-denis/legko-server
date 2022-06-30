@@ -1,18 +1,21 @@
 package apiserver
 
 import (
-	"io"
 	"net/http"
 
-	"github.com/gorilla/mux"
+	"github.com/dvd-denis/legko-server/internal/app/handler"
+	"github.com/dvd-denis/legko-server/internal/app/store"
+	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 )
 
 // APIServer ...
 type APIServer struct {
-	config *Config
-	logger *logrus.Logger
-	router *mux.Router
+	config  *Config
+	logger  *logrus.Logger
+	handler *handler.Handler
+	store   *store.Store
+	router  *gin.Engine
 }
 
 // New ...
@@ -20,13 +23,16 @@ func New(config *Config) *APIServer {
 	return &APIServer{
 		config: config,
 		logger: logrus.New(),
-		router: mux.NewRouter(),
 	}
 }
 
 // Start ...
 func (s *APIServer) Start() error {
 	if err := s.configureLogger(); err != nil {
+		return err
+	}
+
+	if err := s.ConfigureStore(); err != nil {
 		return err
 	}
 
@@ -49,13 +55,17 @@ func (s *APIServer) configureLogger() error {
 	return nil
 }
 
-func (s *APIServer) ConfigureRouter() {
-	s.router.HandleFunc("/hello", s.handleHello())
+func (s *APIServer) ConfigureStore() error {
+	st := store.New(s.config.Store)
+	if err := st.Open(); err != nil {
+		return err
+	}
+
+	s.store = st
+	return nil
 }
 
-func (s *APIServer) handleHello() http.HandlerFunc {
-
-	return func(w http.ResponseWriter, r *http.Request) {
-		io.WriteString(w, "Hello world!")
-	}
+func (s *APIServer) ConfigureRouter() {
+	s.handler = handler.New(s.store)
+	s.router = s.handler.InitRouter()
 }
