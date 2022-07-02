@@ -21,3 +21,13 @@ func (r *ArticleRepository) All() ([]models.Article, error) {
 
 	return articles, err
 }
+
+func (r *ArticleRepository) GetSteps(id int) ([]models.Step, error) {
+	var steps []models.Step
+
+	query := fmt.Sprintf("SELECT * FROM %s WHERE article_id = ?", step_tabel)
+
+	err := r.store.db.Select(&steps, query, id)
+
+	return steps, err
+}

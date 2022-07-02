@@ -7,6 +7,7 @@ import (
 
 const (
 	article_table = "articles"
+	step_tabel    = "steps"
 )
 
 type Store struct {
