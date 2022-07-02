@@ -3,5 +3,6 @@ CREATE TABLE articles (
     title text not null,
     icon_name text not null,
     icon bytea not null,
+    url text not null,
     color text not null
 );

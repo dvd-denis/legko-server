@@ -5,5 +5,6 @@ type Article struct {
 	Title    string
 	IconName string `db:"icon_name"`
 	Icon     []byte
+	Url      string
 	Color    string
 }
