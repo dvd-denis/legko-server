@@ -1,10 +1,10 @@
 package models
 
 type Article struct {
-	Id       int
-	Title    string
+	Id       int    `db:"id"`
+	Title    string `db:"title"`
 	IconName string `db:"icon_name"`
-	Icon     []byte
-	Url      string
-	Color    string
+	Icon     []byte `db:"icon"`
+	Url      string `db:"url"`
+	Color    string `db:"color"`
 }
