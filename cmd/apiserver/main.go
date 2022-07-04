@@ -1,11 +1,16 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"log"
+	"os"
+	"os/signal"
+	"time"
 
 	"github.com/BurntSushi/toml"
 	"github.com/dvd-denis/legko-server/internal/app/apiserver"
+	"github.com/sirupsen/logrus"
 )
 
 var (
@@ -26,7 +31,21 @@ func main() {
 	}
 
 	s := apiserver.New(config)
-	if err := s.Start(); err != nil {
-		log.Fatal(err)
+	go func() {
+		if err := s.Start(); err != nil {
+			logrus.Fatal(err)
+		}
+	}()
+
+	quit := make(chan os.Signal)
+	signal.Notify(quit, os.Interrupt)
+	<-quit
+	logrus.Info("Shutdown Server ...")
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	if err := s.Stop(ctx); err != nil {
+		log.Fatal("Server Shutdown:", err)
 	}
+	logrus.Info("Server exiting")
 }

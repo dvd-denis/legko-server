@@ -7,8 +7,8 @@ import (
 
 const (
 	article_table = "articles"
-	step_tabel    = "steps"
-	image_tabel   = "images"
+	step_table    = "steps"
+	image_table   = "images"
 )
 
 type Store struct {

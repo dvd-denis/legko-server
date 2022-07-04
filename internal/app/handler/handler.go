@@ -19,7 +19,8 @@ func (h *Handler) InitRouter() *gin.Engine {
 	router := gin.New()
 
 	router.GET("/articles", h.ArticleAll)
-	router.GET("/steps/{id}", h.StepGetId)
+	router.GET("/steps/:id", h.StepGetId)
+	router.GET("/article/delete/:id", h.ArticleDelete)
 	router.POST("/article", h.ArticleCreate)
 	router.POST("/step", h.StepCreate)
 	router.POST("/images", h.ImagesCreate)

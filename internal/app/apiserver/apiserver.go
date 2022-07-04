@@ -1,6 +1,7 @@
 package apiserver
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/dvd-denis/legko-server/internal/app/handler"
@@ -14,6 +15,7 @@ type APIServer struct {
 	config  *Config
 	logger  *logrus.Logger
 	handler *handler.Handler
+	srv     *http.Server
 	store   *store.Store
 	router  *gin.Engine
 }
@@ -40,7 +42,16 @@ func (s *APIServer) Start() error {
 
 	s.logger.Info("starting api server")
 
-	return http.ListenAndServe(s.config.BindAddr, s.router)
+	s.srv = &http.Server{
+		Addr:    s.config.BindAddr,
+		Handler: s.router,
+	}
+
+	return s.srv.ListenAndServe()
+}
+
+func (s *APIServer) Stop(ctx context.Context) error {
+	return s.srv.Shutdown(ctx)
 }
 
 // Configure logger level

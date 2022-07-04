@@ -2,6 +2,7 @@ package store
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/dvd-denis/legko-server/internal/app/models"
 )
@@ -24,8 +25,7 @@ func (r *ArticleRepository) All() ([]models.Article, error) {
 
 func (r *ArticleRepository) CreateStep(step models.Step) (int, error) {
 	var id int
-	CreateStepsQuery := fmt.Sprintf("INSERT INTO %s (article_id, title, content, num, wifi) VALUES ($1, $2, $3, $4, $5) RETURNING id", step_tabel)
-
+	CreateStepsQuery := fmt.Sprintf("INSERT INTO %s (article_id, title, content, num, wifi) VALUES ($1, $2, $3, $4, $5) RETURNING id", step_table)
 	row := r.store.db.QueryRow(CreateStepsQuery, step.ArticleId, step.Title, step.Content, step.Num, step.Wifi)
 	if err := row.Scan(&id); err != nil {
 		return 0, err
@@ -34,14 +34,12 @@ func (r *ArticleRepository) CreateStep(step models.Step) (int, error) {
 	return id, nil
 }
 
-func (r *ArticleRepository) CreateImages(images []models.Image) error {
-	CreateImagesQuery := fmt.Sprintf("INSERT INTO %s (step_id, image_name, image) VALUES ($1, $2, $3)", image_tabel)
+func (r *ArticleRepository) CreateImage(image models.Image) error {
+	CreateImagesQuery := fmt.Sprintf("INSERT INTO %s (step_id, image_name, image) VALUES ($1, $2, $3)", image_table)
 
-	for _, image := range images {
-		_, err := r.store.db.Exec(CreateImagesQuery, image.StepId, image.ImageName, image.Image)
-		if err != nil {
-			return err
-		}
+	_, err := r.store.db.Exec(CreateImagesQuery, image.StepId, image.ImageName, image.Image)
+	if err != nil {
+		return err
 	}
 
 	return nil
@@ -62,9 +60,52 @@ func (r *ArticleRepository) CreateArticle(article models.Article) (int, error) {
 func (r *ArticleRepository) GetSteps(id int) ([]models.Step, error) {
 	var steps []models.Step
 
-	query := fmt.Sprintf("SELECT * FROM %s WHERE article_id = ?", step_tabel)
+	query := fmt.Sprintf("SELECT * FROM %s WHERE article_id = $1", step_table)
 
-	err := r.store.db.Select(&steps, query, id)
+	rows, err := r.store.db.Queryx(query, id)
+
+	if err != nil {
+		return nil, err
+	}
+
+	for rows.Next() {
+		var step models.Step
+		if err := rows.StructScan(&step); err != nil {
+			return nil, err
+		}
+
+		images, err := r.GetImagesAsStep(step.Id)
+		if err != nil {
+			return nil, err
+		}
+		for _, image := range images {
+			img := `<img src="data:image/png;base64, ` + image.Image + ` "/>`
+			step.Content = strings.ReplaceAll(step.Content, "{{"+image.ImageName+"}}", img)
+		}
+
+		steps = append(steps, step)
+	}
 
 	return steps, err
+}
+
+func (r *ArticleRepository) GetImagesAsStep(id int) ([]models.Image, error) {
+	var images []models.Image
+
+	query := fmt.Sprintf("Select * from %s where id = $1", image_table)
+
+	err := r.store.db.Select(&images, query, id)
+
+	return images, err
+}
+
+func (r *ArticleRepository) DeleteArticle(id int) error {
+	DeleteQuery := fmt.Sprintf("DELETE FROM %s WHERE id = $1", article_table)
+
+	_, err := r.store.db.Exec(DeleteQuery, id)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

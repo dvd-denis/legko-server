@@ -2,6 +2,7 @@ package handler
 
 import (
 	"net/http"
+	"strconv"
 
 	_ "encoding/json"
 
@@ -22,7 +23,7 @@ func (h *Handler) ArticleAll(c *gin.Context) {
 type ArticleInInput struct {
 	Title    string `json:"title"`
 	IconName string `json:"icon_name"`
-	Icon     []byte `json:"icon"`
+	Icon     string `json:"icon"`
 	Url      string `json:"url"`
 	Color    string `json:"color"`
 }
@@ -49,15 +50,44 @@ func (h *Handler) ArticleCreate(c *gin.Context) {
 	newResponse(c, http.StatusOK, id)
 }
 
+func (h *Handler) ArticleDelete(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	if err := h.store.Article().DeleteArticle(id); err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	newResponse(c, http.StatusOK, "OK")
+}
+
+type StepInInput struct {
+	ArticleId int    `json:"article_id"`
+	Title     string `json:"title"`
+	Content   string `json:"content"`
+	Num       int    `json:"num"`
+	Wifi      string `json:"wifi"`
+}
+
 func (h *Handler) StepCreate(c *gin.Context) {
-	var input models.Step
+	var input StepInInput
 
 	if err := c.BindJSON(&input); err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	id, err := h.store.Article().CreateStep(input)
+	id, err := h.store.Article().CreateStep(models.Step{
+		ArticleId: input.ArticleId,
+		Title:     input.Title,
+		Num:       input.Num,
+		Wifi:      input.Wifi,
+		Content:   input.Content,
+	})
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -66,18 +96,29 @@ func (h *Handler) StepCreate(c *gin.Context) {
 	newResponse(c, http.StatusOK, id)
 }
 
+type ImageInInput struct {
+	ImageName string `json:"image_name"`
+	Image     string `json:"image"`
+	StepId    int    `json:"step_id"`
+}
+
 func (h *Handler) ImagesCreate(c *gin.Context) {
-	var input []models.Image
+	var input []ImageInInput
 
 	if err := c.BindJSON(&input); err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
-
-	err := h.store.Article().CreateImages(input)
-	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, err.Error())
-		return
+	for _, image := range input {
+		err := h.store.Article().CreateImage(models.Image{
+			ImageName: image.ImageName,
+			Image:     image.Image,
+			StepId:    image.StepId,
+		})
+		if err != nil {
+			newErrorResponse(c, http.StatusInternalServerError, err.Error())
+			return
+		}
 	}
 
 	newResponse(c, http.StatusOK, "OK")
