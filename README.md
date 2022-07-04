@@ -1,9 +1,17 @@
 # legko-server
 #### **REST API SEVER**
-- > hello ->
-`/hello`
-- > get alls articles ->
+- > get all articles ->
 `/articles`
+- > get steps from articles ->
+`/step/:id`
+- > delete article ->
+`/article/delete/:id`
+- > [**POST**] create article ->
+`/article`
+- > [**POST**] create step ->
+`/step`
+- > [**POST**] create image ->
+`/image`
 
 #### Use postgresql 
 - > up migrations ->
