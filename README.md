@@ -2,16 +2,19 @@
 #### **REST API SEVER**
 - > get all articles ->
 `/articles`
-- > get steps from articles ->
+- > get steps from article ->
 `/step/:id`
 - > delete article ->
 `/article/delete/:id`
+- > get questions from article ->
+`/questions/:id`
 - > [**POST**] create article ->
 `/article`
 - > [**POST**] create step ->
 `/step`
 - > [**POST**] create image ->
 `/image`
+
 
 #### Use postgresql 
 - > up migrations ->

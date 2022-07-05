@@ -22,3 +22,19 @@ func (h *Handler) StepGetId(c *gin.Context) {
 
 	newResponse(c, http.StatusOK, steps)
 }
+
+func (h *Handler) QuestionGetId(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	steps, err := h.store.Article().GetQuestion(id)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	newResponse(c, http.StatusOK, steps)
+}

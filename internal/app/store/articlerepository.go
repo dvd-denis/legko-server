@@ -89,6 +89,29 @@ func (r *ArticleRepository) GetSteps(id int) ([]models.Step, error) {
 	return steps, err
 }
 
+func (r *ArticleRepository) GetQuestion(id int) ([]models.Step, error) {
+	var steps []models.Step
+
+	query := fmt.Sprintf("SELECT * FROM %s WHERE article_id = $1 AND question = $2", step_table)
+
+	rows, err := r.store.db.Queryx(query, id, true)
+
+	if err != nil {
+		return nil, err
+	}
+
+	for rows.Next() {
+		var step models.Step
+		if err := rows.StructScan(&step); err != nil {
+			return nil, err
+		}
+
+		steps = append(steps, step)
+	}
+
+	return steps, err
+}
+
 func (r *ArticleRepository) GetImagesAsStep(id int) ([]models.Image, error) {
 	var images []models.Image
 

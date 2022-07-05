@@ -4,5 +4,6 @@ CREATE TABLE steps (
     title text not null,
     content text not null,
     num int not null,
-    wifi text not null
+    wifi boolean not null,
+    question boolean default false not null
 );

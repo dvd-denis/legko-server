@@ -20,6 +20,7 @@ func (h *Handler) InitRouter() *gin.Engine {
 
 	router.GET("/articles", h.ArticleAll)
 	router.GET("/steps/:id", h.StepGetId)
+	router.GET("/questions/:id", h.QuestionGetId)
 	router.GET("/article/delete/:id", h.ArticleDelete)
 	router.POST("/article", h.ArticleCreate)
 	router.POST("/step", h.StepCreate)

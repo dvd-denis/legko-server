@@ -70,7 +70,8 @@ type StepInInput struct {
 	Title     string `json:"title"`
 	Content   string `json:"content"`
 	Num       int    `json:"num"`
-	Wifi      string `json:"wifi"`
+	Wifi      bool   `json:"wifi"`
+	Question  bool   `json:"question"`
 }
 
 func (h *Handler) StepCreate(c *gin.Context) {
@@ -87,6 +88,7 @@ func (h *Handler) StepCreate(c *gin.Context) {
 		Num:       input.Num,
 		Wifi:      input.Wifi,
 		Content:   input.Content,
+		Question:  input.Question,
 	})
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())

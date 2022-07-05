@@ -1,17 +1,18 @@
 package models
 
 type Step struct {
-	Id        int    `db:"id"`
-	ArticleId int    `db:"article_id"`
-	Title     string `db:"title"`
-	Content   string `db:"content"`
-	Num       int    `db:"num"`
-	Wifi      string `db:"wifi"`
+	Id        int    `db:"id" json:"id"`
+	ArticleId int    `db:"article_id" json:"article_id"`
+	Title     string `db:"title" json:"title"`
+	Content   string `db:"content" json:"content"`
+	Num       int    `db:"num" json:"num"`
+	Wifi      bool   `db:"wifi" json:"wifi"`
+	Question  bool   `db:"question" json:"question1"`
 }
 
 type Image struct {
-	Id        int
-	ImageName string `db:"image_name"`
-	Image     string
-	StepId    int `db:"step_id"`
+	Id        int    `db:"id" json:"id"`
+	ImageName string `db:"image_name" json:"image_name"`
+	Image     string `db:"image" json:"image"`
+	StepId    int    `db:"step_id" json:"step_id"`
 }
