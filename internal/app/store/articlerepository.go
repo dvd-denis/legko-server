@@ -5,7 +5,6 @@ import (
 	"strings"
 
 	"github.com/dvd-denis/legko-server/internal/app/models"
-	"github.com/sirupsen/logrus"
 )
 
 // ArticleRepository ...
@@ -125,7 +124,6 @@ func (r *ArticleRepository) GetImagesAsStep(id int) ([]models.Image, error) {
 
 func (r *ArticleRepository) DeleteArticle(id int) error {
 	DeleteQuery := fmt.Sprintf("DELETE FROM %s WHERE id = $1;", article_table)
-	logrus.Info(id, DeleteQuery)
 	_, err := r.store.db.Exec(DeleteQuery, id)
 	if err != nil {
 		return err
