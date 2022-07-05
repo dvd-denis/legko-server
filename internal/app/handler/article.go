@@ -90,6 +90,7 @@ func (h *Handler) StepCreate(c *gin.Context) {
 		Content:   input.Content,
 		Question:  input.Question,
 	})
+
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return

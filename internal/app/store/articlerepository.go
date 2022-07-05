@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/dvd-denis/legko-server/internal/app/models"
+	"github.com/sirupsen/logrus"
 )
 
 // ArticleRepository ...
@@ -25,8 +26,8 @@ func (r *ArticleRepository) All() ([]models.Article, error) {
 
 func (r *ArticleRepository) CreateStep(step models.Step) (int, error) {
 	var id int
-	CreateStepsQuery := fmt.Sprintf("INSERT INTO %s (article_id, title, content, num, wifi) VALUES ($1, $2, $3, $4, $5) RETURNING id", step_table)
-	row := r.store.db.QueryRow(CreateStepsQuery, step.ArticleId, step.Title, step.Content, step.Num, step.Wifi)
+	CreateStepsQuery := fmt.Sprintf("INSERT INTO %s (article_id, title, content, num, wifi, question) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id", step_table)
+	row := r.store.db.QueryRow(CreateStepsQuery, step.ArticleId, step.Title, step.Content, step.Num, step.Wifi, step.Question)
 	if err := row.Scan(&id); err != nil {
 		return 0, err
 	}
@@ -60,9 +61,9 @@ func (r *ArticleRepository) CreateArticle(article models.Article) (int, error) {
 func (r *ArticleRepository) GetSteps(id int) ([]models.Step, error) {
 	var steps []models.Step
 
-	query := fmt.Sprintf("SELECT * FROM %s WHERE article_id = $1", step_table)
+	query := fmt.Sprintf("SELECT * FROM %s WHERE article_id = $1 AND question = $2", step_table)
 
-	rows, err := r.store.db.Queryx(query, id)
+	rows, err := r.store.db.Queryx(query, id, false)
 
 	if err != nil {
 		return nil, err
@@ -123,8 +124,8 @@ func (r *ArticleRepository) GetImagesAsStep(id int) ([]models.Image, error) {
 }
 
 func (r *ArticleRepository) DeleteArticle(id int) error {
-	DeleteQuery := fmt.Sprintf("DELETE FROM %s WHERE id = $1", article_table)
-
+	DeleteQuery := fmt.Sprintf("DELETE FROM %s WHERE id = $1;", article_table)
+	logrus.Info(id, DeleteQuery)
 	_, err := r.store.db.Exec(DeleteQuery, id)
 	if err != nil {
 		return err

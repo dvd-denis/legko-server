@@ -7,7 +7,7 @@ type Step struct {
 	Content   string `db:"content" json:"content"`
 	Num       int    `db:"num" json:"num"`
 	Wifi      bool   `db:"wifi" json:"wifi"`
-	Question  bool   `db:"question" json:"question1"`
+	Question  bool   `db:"question" json:"-"`
 }
 
 type Image struct {
