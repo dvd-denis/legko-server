@@ -30,6 +30,10 @@ func New(config *Config) *APIServer {
 
 // Start ...
 func (s *APIServer) Start() error {
+	if !s.config.GinDebug {
+		gin.SetMode(gin.ReleaseMode)
+	}
+
 	if err := s.configureLogger(); err != nil {
 		return err
 	}
