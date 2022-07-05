@@ -78,8 +78,9 @@ func (r *ArticleRepository) GetSteps(id int) ([]models.Step, error) {
 		if err != nil {
 			return nil, err
 		}
+
 		for _, image := range images {
-			img := `<img src="data:image/png;base64, ` + image.Image + ` "/>`
+			img := `<img src="data:image/png;base64, ` + image.Image + ` ">`
 			step.Content = strings.ReplaceAll(step.Content, "{{"+image.ImageName+"}}", img)
 		}
 
@@ -115,7 +116,7 @@ func (r *ArticleRepository) GetQuestion(id int) ([]models.Step, error) {
 func (r *ArticleRepository) GetImagesAsStep(id int) ([]models.Image, error) {
 	var images []models.Image
 
-	query := fmt.Sprintf("Select * from %s where id = $1", image_table)
+	query := fmt.Sprintf("Select * from %s where step_id = $1", image_table)
 
 	err := r.store.db.Select(&images, query, id)
 
