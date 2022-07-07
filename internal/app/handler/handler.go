@@ -18,6 +18,8 @@ func New(st *store.Store) *Handler {
 func (h *Handler) InitRouter() *gin.Engine {
 	router := gin.New()
 
+	router.Use(CORSMiddleware())
+
 	router.GET("/articles", h.Articles)
 	router.GET("/steps/:id", h.StepGetId)
 	router.GET("/questions", h.Questions)
