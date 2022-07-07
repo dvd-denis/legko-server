@@ -5,7 +5,7 @@
 - > get steps from article ->
 `/step/:id`
 - > get questions from article ->
-`/questions/`
+`/questions`
 - > [**POST**] delete article ->
 `/article/delete/:id`
 - > [**POST**] create article ->
