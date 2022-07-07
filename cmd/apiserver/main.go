@@ -23,7 +23,7 @@ func init() {
 	if err := godotenv.Load(".env"); err != nil {
 		log.Println("No .env file found")
 		log.Println(os.Getenv("KEY"))
-		log.Println(os.Getenv("$PORT"))
+		log.Println(os.Getenv("PORT"))
 	}
 }
 
