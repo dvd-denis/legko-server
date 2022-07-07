@@ -10,7 +10,6 @@ import (
 
 	"github.com/BurntSushi/toml"
 	"github.com/dvd-denis/legko-server/internal/app/apiserver"
-	"github.com/joho/godotenv"
 	"github.com/sirupsen/logrus"
 )
 
@@ -20,11 +19,6 @@ var (
 
 func init() {
 	flag.StringVar(&configPath, "config-path", "configs/apiserver.toml", "path to config file")
-	if err := godotenv.Load(".env"); err != nil {
-		log.Println("No .env file found")
-		log.Println(os.Getenv("KEY"))
-		log.Println(os.Getenv("PORT"))
-	}
 }
 
 func main() {
@@ -35,6 +29,8 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	config.BindAddr = ":" + os.Getenv("PORT")
 
 	s := apiserver.New(config)
 	go func() {
