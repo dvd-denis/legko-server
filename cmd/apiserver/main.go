@@ -21,7 +21,7 @@ var (
 func init() {
 	flag.StringVar(&configPath, "config-path", "configs/apiserver.toml", "path to config file")
 	if err := godotenv.Load(); err != nil {
-		log.Fatal("No .env file found")
+		log.Println("No .env file found")
 	}
 }
 
