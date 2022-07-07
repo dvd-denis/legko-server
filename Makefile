@@ -12,4 +12,8 @@ migrate:
 	migrate -path migrations -database "postgres://localhost/legko?sslmode=disable" down
 	migrate -path migrations -database "postgres://localhost/legko?sslmode=disable" up
 
+drop:
+	migrate -path migrations -database "postgres://localhost/legko?sslmode=disable" drop
+	migrate -path migrations -database "postgres://localhost/legko?sslmode=disable" up
+
 .DEFAULT_GOAL := run

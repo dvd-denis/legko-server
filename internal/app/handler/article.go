@@ -11,13 +11,33 @@ import (
 )
 
 func (h *Handler) Articles(c *gin.Context) {
-	articles, err := h.store.Article().Articles()
+	model := c.Query("model")
+	if model == "" {
+		model = "default"
+	}
+
+	articles, err := h.store.Article().All(model, false)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
 	newResponse(c, http.StatusOK, articles)
+}
+
+func (h *Handler) Questions(c *gin.Context) {
+	model := c.Query("model")
+	if model == "" {
+		model = "default"
+	}
+
+	questions, err := h.store.Article().All(model, true)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	newResponse(c, http.StatusOK, questions)
 }
 
 func (h *Handler) ArticleCreate(c *gin.Context) {

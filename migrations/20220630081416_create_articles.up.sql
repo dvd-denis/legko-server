@@ -6,5 +6,6 @@ CREATE TABLE articles (
     url text not null,
     color text not null,
     wifi boolean not null,
-    question boolean default false not null
+    question boolean default false not null,
+    model text default('default') not null
 );

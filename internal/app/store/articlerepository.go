@@ -12,13 +12,13 @@ type ArticleRepository struct {
 	store *Store
 }
 
-// Get all articles
-func (r *ArticleRepository) Articles() ([]models.Article, error) {
+// Get all articles or questions
+func (r *ArticleRepository) All(model string, isQuestion bool) ([]models.Article, error) {
 
 	var articles []models.Article
 
-	query := fmt.Sprintf("SELECT * FROM %s WHERE question = $1", article_table)
-	err := r.store.db.Select(&articles, query, false)
+	query := fmt.Sprintf("SELECT * FROM %s WHERE question = $1 AND model = $2", article_table)
+	err := r.store.db.Select(&articles, query, isQuestion, model)
 
 	return articles, err
 }
@@ -88,15 +88,6 @@ func (r *ArticleRepository) GetSteps(id int) ([]models.Step, error) {
 	}
 
 	return steps, err
-}
-
-func (r *ArticleRepository) GetQuestions() ([]models.Article, error) {
-	var articles []models.Article
-
-	query := fmt.Sprintf("SELECT * FROM %s WHERE question = $1", article_table)
-	err := r.store.db.Select(&articles, query, true)
-
-	return articles, err
 }
 
 func (r *ArticleRepository) GetImagesAsStep(id int) ([]models.Image, error) {

@@ -9,4 +9,5 @@ type Article struct {
 	Color    string `db:"color" json:"color"`
 	Wifi     bool   `db:"wifi" json:"wifi"`
 	Question bool   `db:"question" json:"-"`
+	Model    string `db:"model" json:"model"`
 }
