@@ -4,7 +4,7 @@ import "github.com/dvd-denis/legko-server/internal/app/store"
 
 // Config ...
 type Config struct {
-	BindAddr string `toml:"bind_addr"`
+	BindAddr string
 	LogLevel string `toml:"log_level"`
 	GinDebug bool   `toml:"gin_debug"`
 	Store    *store.Config

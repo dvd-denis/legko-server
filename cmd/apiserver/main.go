@@ -31,6 +31,7 @@ func main() {
 	}
 
 	config.BindAddr = ":" + os.Getenv("PORT")
+	config.Store.DatabaseURL = os.Getenv("DATABASE_URL")
 
 	s := apiserver.New(config)
 	go func() {

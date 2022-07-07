@@ -1,6 +1,2 @@
-bind_addr = ":8080"
 log_level = "debug"
 gin_debug  = false
-
-[store]
-database_url = "host=ec2-52-204-195-41.compute-1.amazonaws.com dbname=deu08iojscgjda user=ugjwcftwggewbs password=a0aa09fefbc815ab2241a469fd1d267c5142abd4bdb261c0b9166ed4b9fa5fd3"
