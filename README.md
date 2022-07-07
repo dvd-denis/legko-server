@@ -4,10 +4,10 @@
 `/articles`
 - > get steps from article ->
 `/step/:id`
-- > delete article ->
-`/article/delete/:id`
 - > get questions from article ->
-`/questions/:id`
+`/questions/`
+- > [**POST**] delete article ->
+`/article/delete/:id`
 - > [**POST**] create article ->
 `/article`
 - > [**POST**] create step ->
@@ -15,6 +15,9 @@
 - > [**POST**] create image ->
 `/image`
 
+#### Env file
+- > rename `.env.template` to `.env`
+- > enter your key to `KEY`
 
 #### Use postgresql 
 - > up migrations ->

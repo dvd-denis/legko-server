@@ -1,6 +1,10 @@
 package handler
 
-import "github.com/gin-gonic/gin"
+import (
+	"os"
+
+	"github.com/gin-gonic/gin"
+)
 
 func CORSMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -12,6 +16,23 @@ func CORSMiddleware() gin.HandlerFunc {
 		if c.Request.Method == "OPTIONS" {
 			c.AbortWithStatus(204)
 			return
+		}
+
+		c.Next()
+	}
+}
+
+func CheckKey() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		if c.Request.Method == "POST" {
+			key := c.Request.Header.Get("Key")
+			key_env, exists := os.LookupEnv("KEY")
+			if exists {
+				if key_env != key {
+					newErrorResponse(c, 204, "Key invalid")
+					return
+				}
+			}
 		}
 
 		c.Next()
