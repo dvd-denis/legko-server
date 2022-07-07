@@ -7,4 +7,6 @@ type Article struct {
 	Icon     string `db:"icon"`
 	Url      string `db:"url"`
 	Color    string `db:"color"`
+	Wifi     bool   `db:"wifi" json:"wifi"`
+	Question bool   `db:"question" json:"-"`
 }

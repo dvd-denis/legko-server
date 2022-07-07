@@ -13,20 +13,20 @@ type ArticleRepository struct {
 }
 
 // Get all articles
-func (r *ArticleRepository) All() ([]models.Article, error) {
+func (r *ArticleRepository) Articles() ([]models.Article, error) {
 
 	var articles []models.Article
 
-	query := fmt.Sprintf("SELECT * FROM %s", article_table)
-	err := r.store.db.Select(&articles, query)
+	query := fmt.Sprintf("SELECT * FROM %s WHERE question = $1", article_table)
+	err := r.store.db.Select(&articles, query, false)
 
 	return articles, err
 }
 
 func (r *ArticleRepository) CreateStep(step models.Step) (int, error) {
 	var id int
-	CreateStepsQuery := fmt.Sprintf("INSERT INTO %s (article_id, title, content, num, wifi, question) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id", step_table)
-	row := r.store.db.QueryRow(CreateStepsQuery, step.ArticleId, step.Title, step.Content, step.Num, step.Wifi, step.Question)
+	CreateStepsQuery := fmt.Sprintf("INSERT INTO %s (article_id, title, content, num) VALUES ($1, $2, $3, $4) RETURNING id", step_table)
+	row := r.store.db.QueryRow(CreateStepsQuery, step.ArticleId, step.Title, step.Content, step.Num)
 	if err := row.Scan(&id); err != nil {
 		return 0, err
 	}
@@ -47,9 +47,9 @@ func (r *ArticleRepository) CreateImage(image models.Image) error {
 
 func (r *ArticleRepository) CreateArticle(article models.Article) (int, error) {
 	var id int
-	createArticleQuery := fmt.Sprintf("INSERT INTO %s (title, icon_name, icon, url, color) VALUES ($1, $2, $3, $4, $5) RETURNING id", article_table)
+	createArticleQuery := fmt.Sprintf("INSERT INTO %s (title, icon_name, icon, url, color, wifi, question) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id", article_table)
 
-	row := r.store.db.QueryRow(createArticleQuery, article.Title, article.IconName, article.Icon, article.Url, article.Color)
+	row := r.store.db.QueryRow(createArticleQuery, article.Title, article.IconName, article.Icon, article.Url, article.Color, article.Wifi, article.Question)
 	if err := row.Scan(&id); err != nil {
 		return 0, err
 	}
@@ -60,9 +60,9 @@ func (r *ArticleRepository) CreateArticle(article models.Article) (int, error) {
 func (r *ArticleRepository) GetSteps(id int) ([]models.Step, error) {
 	var steps []models.Step
 
-	query := fmt.Sprintf("SELECT * FROM %s WHERE article_id = $1 AND question = $2", step_table)
+	query := fmt.Sprintf("SELECT * FROM %s WHERE article_id = $1", step_table)
 
-	rows, err := r.store.db.Queryx(query, id, false)
+	rows, err := r.store.db.Queryx(query, id)
 
 	if err != nil {
 		return nil, err
@@ -90,27 +90,13 @@ func (r *ArticleRepository) GetSteps(id int) ([]models.Step, error) {
 	return steps, err
 }
 
-func (r *ArticleRepository) GetQuestion(id int) ([]models.Step, error) {
-	var steps []models.Step
+func (r *ArticleRepository) GetQuestions() ([]models.Article, error) {
+	var articles []models.Article
 
-	query := fmt.Sprintf("SELECT * FROM %s WHERE article_id = $1 AND question = $2", step_table)
+	query := fmt.Sprintf("SELECT * FROM %s WHERE question = $1", article_table)
+	err := r.store.db.Select(&articles, query, true)
 
-	rows, err := r.store.db.Queryx(query, id, true)
-
-	if err != nil {
-		return nil, err
-	}
-
-	for rows.Next() {
-		var step models.Step
-		if err := rows.StructScan(&step); err != nil {
-			return nil, err
-		}
-
-		steps = append(steps, step)
-	}
-
-	return steps, err
+	return articles, err
 }
 
 func (r *ArticleRepository) GetImagesAsStep(id int) ([]models.Image, error) {

@@ -18,9 +18,9 @@ func New(st *store.Store) *Handler {
 func (h *Handler) InitRouter() *gin.Engine {
 	router := gin.New()
 
-	router.GET("/articles", h.ArticleAll)
+	router.GET("/articles", h.Articles)
 	router.GET("/steps/:id", h.StepGetId)
-	router.GET("/questions/:id", h.QuestionGetId)
+	router.GET("/questions", h.Questions)
 	router.GET("/article/delete/:id", h.ArticleDelete)
 	router.POST("/article", h.ArticleCreate)
 	router.POST("/step", h.StepCreate)
