@@ -2,7 +2,6 @@ package handler
 
 import (
 	"net/http"
-	"sort"
 	"strconv"
 
 	"github.com/dvd-denis/legko-server/internal/app/models"
@@ -21,12 +20,6 @@ func (h *Handler) GetSteps(c *gin.Context) {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
-
-	// Sorting steps on num
-
-	sort.Slice(steps, func(i, j int) bool {
-		return steps[i].Num < steps[j].Num
-	})
 
 	newResponse(c, http.StatusOK, steps)
 }

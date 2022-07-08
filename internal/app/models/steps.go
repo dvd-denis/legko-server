@@ -5,7 +5,7 @@ type Step struct {
 	ArticleId int    `db:"article_id" json:"article_id"`
 	Title     string `db:"title" json:"title"`
 	Content   string `db:"content" json:"content"`
-	Num       int    `db:"num" json:"-"`
+	Num       int    `db:"num" json:"num"`
 }
 
 type Image struct {

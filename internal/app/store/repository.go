@@ -36,7 +36,7 @@ func (r *Repository) CreateGroup(group models.Group) (int, error) {
 func (r *Repository) SeatchArticle(id int, str string) ([]models.Article, error) {
 	var articles []models.Article
 
-	query := fmt.Sprintf("SELECT * FROM %s WHERE group_id = $1 AND title ILIKE $2", article_table)
+	query := fmt.Sprintf("SELECT * FROM %s WHERE group_id = $1 AND (title ILIKE $2 OR tags ILIKE $2)", article_table)
 	err := r.store.db.Select(&articles, query, id, "%"+str+"%")
 
 	return articles, err
@@ -53,9 +53,9 @@ func (r *Repository) GetArticle(id int) ([]models.Article, error) {
 
 func (r *Repository) CreateArticle(article models.Article) (int, error) {
 	var id int
-	createArticleQuery := fmt.Sprintf("INSERT INTO %s (title, group_id) VALUES ($1, $2) RETURNING id", article_table)
+	createArticleQuery := fmt.Sprintf("INSERT INTO %s (title, tags, group_id) VALUES ($1, $2, $3) RETURNING id", article_table)
 
-	row := r.store.db.QueryRow(createArticleQuery, article.Title, article.GroupId)
+	row := r.store.db.QueryRow(createArticleQuery, article.Title, article.Tags, article.GroupId)
 	if err := row.Scan(&id); err != nil {
 		return 0, err
 	}
@@ -66,7 +66,7 @@ func (r *Repository) CreateArticle(article models.Article) (int, error) {
 func (r *Repository) GetSteps(id int) ([]models.Step, error) {
 	var steps []models.Step
 
-	query := fmt.Sprintf("SELECT * FROM %s WHERE article_id = $1", step_table)
+	query := fmt.Sprintf("SELECT * FROM %s WHERE article_id = $1 ORDER BY num", step_table)
 
 	rows, err := r.store.db.Queryx(query, id)
 
