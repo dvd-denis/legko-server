@@ -45,7 +45,7 @@ func (r *Repository) SeatchArticle(id int, str string) ([]models.Article, error)
 func (r *Repository) GetArticle(id int) ([]models.Article, error) {
 	var articles []models.Article
 
-	query := fmt.Sprintf("SELECT * FROM %s WHERE group_id = $1", group_table)
+	query := fmt.Sprintf("SELECT * FROM %s WHERE group_id = $1", article_table)
 	err := r.store.db.Select(&articles, query, id)
 
 	return articles, err
