@@ -10,6 +10,7 @@ import (
 
 	"github.com/BurntSushi/toml"
 	"github.com/dvd-denis/legko-server/internal/app/apiserver"
+	"github.com/joho/godotenv"
 	"github.com/sirupsen/logrus"
 )
 
@@ -19,6 +20,7 @@ var (
 
 func init() {
 	flag.StringVar(&configPath, "config-path", "configs/apiserver.toml", "path to config file")
+	godotenv.Load()
 }
 
 func main() {
