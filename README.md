@@ -1,13 +1,15 @@
 # legko-server
 #### **REST API SEVER**
-- > get all articles ->
-`/articles`
-- > get steps from article ->
-`/step/:id`
-- > get questions from article ->
-`/questions`
-- > [**POST**] delete article ->
-`/article/delete/:id`
+- > get all groups ->
+`/groups`
+- > get group articles or search group articles  ->
+`/articles/:group_id?search=string`
+- > get article steps->
+`/steps/:article_id`
+- > [**POST**] delete group ->
+`/group/delete/:id`
+- > [**POST**] create group ->
+`/group`
 - > [**POST**] create article ->
 `/article`
 - > [**POST**] create step ->
@@ -15,7 +17,7 @@
 - > [**POST**] create image ->
 `/image`
 
-#### This server move to Heroku
+#### In hosted on Heroku
 
 #### Use postgresql 
 - > up migrations ->
