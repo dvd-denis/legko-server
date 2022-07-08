@@ -21,13 +21,14 @@ func (h *Handler) InitRouter() *gin.Engine {
 	router.Use(CORSMiddleware())
 	router.Use(CheckKey())
 
-	router.GET("/articles", h.Articles)
-	router.GET("/steps/:id", h.StepGetId)
-	router.GET("/questions", h.Questions)
-	router.POST("/article/delete/:id", h.ArticleDelete)
-	router.POST("/article", h.ArticleCreate)
-	router.POST("/step", h.StepCreate)
-	router.POST("/images", h.ImagesCreate)
+	router.GET("/groups", h.GetGroups)
+	router.GET("/articles/:group_id", h.GetArticles)
+	router.GET("/steps/:article_id", h.GetSteps)
+	router.POST("/group/delete/:id", h.DeleteGroup)
+	router.POST("/group", h.CreateGroup)
+	router.POST("/article", h.CreateArticle)
+	router.POST("/step", h.CreateStep)
+	router.POST("/images", h.CreateImages)
 
 	return router
 }

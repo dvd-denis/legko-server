@@ -9,12 +9,13 @@ const (
 	article_table = "articles"
 	step_table    = "steps"
 	image_table   = "images"
+	group_table   = "groups"
 )
 
 type Store struct {
-	config            *Config
-	db                *sqlx.DB
-	articleRepository *ArticleRepository
+	config     *Config
+	db         *sqlx.DB
+	Repository *Repository
 }
 
 func New(config *Config) *Store {
@@ -42,14 +43,14 @@ func (s *Store) Close() {
 	s.db.Close()
 }
 
-func (s *Store) Article() *ArticleRepository {
-	if s.articleRepository != nil {
-		return s.articleRepository
+func (s *Store) Article() *Repository {
+	if s.Repository != nil {
+		return s.Repository
 	}
 
-	s.articleRepository = &ArticleRepository{
+	s.Repository = &Repository{
 		store: s,
 	}
 
-	return s.articleRepository
+	return s.Repository
 }

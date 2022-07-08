@@ -15,9 +15,7 @@
 - > [**POST**] create image ->
 `/image`
 
-#### Env file
-- > rename `.env.template` to `.env`
-- > enter your key to `KEY`
+#### This server move to Heroku
 
 #### Use postgresql 
 - > up migrations ->

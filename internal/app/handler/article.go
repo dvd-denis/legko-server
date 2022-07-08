@@ -10,40 +10,37 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (h *Handler) Articles(c *gin.Context) {
-	model := c.Query("model")
-	if model == "" {
-		model = "default"
+func (h *Handler) GetArticles(c *gin.Context) {
+	group_id, err := strconv.Atoi(c.Param("group_id"))
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
 	}
 
-	articles, err := h.store.Article().All(model, false)
-	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, err.Error())
-		return
+	var articles []models.Article
+
+	str := c.Query("search")
+	if str != "" {
+		articles, err = h.store.Article().SeatchArticle(group_id, str)
+		if err != nil {
+			newErrorResponse(c, http.StatusInternalServerError, err.Error())
+			return
+		}
+	} else {
+		articles, err = h.store.Article().GetArticle(group_id)
+		if err != nil {
+			newErrorResponse(c, http.StatusInternalServerError, err.Error())
+			return
+		}
 	}
 
 	newResponse(c, http.StatusOK, articles)
 }
 
-func (h *Handler) Questions(c *gin.Context) {
-	model := c.Query("model")
-	if model == "" {
-		model = "default"
-	}
-
-	questions, err := h.store.Article().All(model, true)
-	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, err.Error())
-		return
-	}
-
-	newResponse(c, http.StatusOK, questions)
-}
-
-func (h *Handler) ArticleCreate(c *gin.Context) {
+func (h *Handler) CreateArticle(c *gin.Context) {
 	var input models.Article
 	if err := c.BindJSON(&input); err != nil {
-		newErrorResponse(c, http.StatusBadRequest, err.Error()+"1")
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -54,55 +51,4 @@ func (h *Handler) ArticleCreate(c *gin.Context) {
 	}
 
 	newResponse(c, http.StatusOK, id)
-}
-
-func (h *Handler) ArticleDelete(c *gin.Context) {
-	id, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		newErrorResponse(c, http.StatusBadRequest, err.Error())
-		return
-	}
-
-	if err := h.store.Article().DeleteArticle(id); err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, err.Error())
-		return
-	}
-
-	newResponse(c, http.StatusOK, "OK")
-}
-
-func (h *Handler) StepCreate(c *gin.Context) {
-	var input models.Step
-
-	if err := c.BindJSON(&input); err != nil {
-		newErrorResponse(c, http.StatusBadRequest, err.Error())
-		return
-	}
-
-	id, err := h.store.Article().CreateStep(input)
-
-	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, err.Error())
-		return
-	}
-
-	newResponse(c, http.StatusOK, id)
-}
-
-func (h *Handler) ImagesCreate(c *gin.Context) {
-	var input []models.Image
-
-	if err := c.BindJSON(&input); err != nil {
-		newErrorResponse(c, http.StatusBadRequest, err.Error())
-		return
-	}
-	for _, image := range input {
-		err := h.store.Article().CreateImage(image)
-		if err != nil {
-			newErrorResponse(c, http.StatusInternalServerError, err.Error())
-			return
-		}
-	}
-
-	newResponse(c, http.StatusOK, "OK")
 }
