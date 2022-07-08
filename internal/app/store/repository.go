@@ -36,7 +36,7 @@ func (r *Repository) CreateGroup(group models.Group) (int, error) {
 func (r *Repository) SeatchArticle(id int, str string) ([]models.Article, error) {
 	var articles []models.Article
 
-	query := fmt.Sprintf("SELECT * FROM %s WHERE group_id = $1 AND title LIKE $2", article_table)
+	query := fmt.Sprintf("SELECT * FROM %s WHERE group_id = $1 AND title ILIKE $2", article_table)
 	err := r.store.db.Select(&articles, query, id, "%"+str+"%")
 
 	return articles, err
